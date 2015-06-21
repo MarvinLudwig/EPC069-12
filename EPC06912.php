@@ -8,12 +8,15 @@ class EPC06912 {
 
 	public static $error;
 
-	public static function create ($name,$bic,$iban,$amount,$text,$encoding_str = null){
+	public static function create ($name, $bic, $iban, $amount, $text, $lang = "en", $encoding_str = null){
+	
+		require_once("lang_".$lang.".php");
 	
 		self::$error = "";
 		$error = "";
 		$cutEpc = "";
 		
+		// detect encoding
 		if ($encoding_str == null){
 			$encoding_str = mb_detect_encoding($bic.$name.$iban.$amount.$text,mb_detect_order(),true);
 			if ($encoding_str != "UTF-8") $encoding_str = "ISO-8859-1";
@@ -27,21 +30,21 @@ class EPC06912 {
 		$iban = str_replace(" ", "", $iban);
 		
 		// check values (make sure that BIC and IBAN are valid, here we check only for length)
-		if ($encoding_epc == "") $error .= "Character encoding $encoding_str is not supported.\r\n"; 
-		if (!is_numeric($amount)) $error .= "Amount is not a valid number.\r\n";
+		if ($encoding_epc == "") $error .= $msg["encoding_1"]." $encoding_str ".$msg["encoding_2"]."\r\n"; 
+		if (!is_numeric($amount)) $error .= $msg['amount_invalid']."\r\n";
 		else {
 			$amount = (float)$amount;
 			$amount_arr = explode(".",$amount);
 			if (count($amount_arr) == 2) {
 				$decimals = $amount_arr[1];
-				if (strlen($decimals) > 2) $error .= "Amount must not have more than 2 decimals.\r\n";;
+				if (strlen($decimals) > 2) $error .= $msg['amount_decimals']."\r\n";
 			}
 		}
-		if (mb_strlen($name,$encoding_str) > 70) $error .= "Name has more than 70 characters.\r\n";
-		if (mb_strlen($bic,$encoding_str) > 11) $error .= "BIC has more than 11 characters.\r\n";
-		if (mb_strlen($iban,$encoding_str) > 34) $error .= "IBAN has more than 34 characters.\r\n";
-		if (mb_strlen($amount,$encoding_str) > 12) $error .= "Amount has more than 12 characters.\r\n";
-		if (mb_strlen($text,$encoding_str) > 140) $error .= "Reference text has more than 140 characters.\r\n";
+		if (mb_strlen($name,$encoding_str) > 70) $error .= $msg['name_length']."\r\n";
+		if (mb_strlen($bic,$encoding_str) > 11) $error .= $msg['bic_length']."\r\n";
+		if (mb_strlen($iban,$encoding_str) > 34) $error .= $msg['iban_length']."\r\n";
+		if (mb_strlen($amount,$encoding_str) > 12) $error .= $msg['amount_length']."\r\n";
+		if (mb_strlen($text,$encoding_str) > 140) $error .= $msg['text_length']."\r\n";
 		if ($error != "") {
 			self::$error = array ("code" => 1, "message" => $error);
 			return false;
@@ -69,7 +72,7 @@ class EPC06912 {
 			// Check if we could cut the text to comply with the bytes limit
 			if ($textBytes >= $excessBytes){ 
 				$cutText = mb_strcut($text,0,$textBytes-$excessBytes-1,$encoding_str);
-				$error .= "Total payload is more than 331 bytes ($strBytes). The reference text has $textBytes bytes.";
+				$error .= $msg['payload_bytes_1']." ($strBytes). ".$msg['payload_bytes_1']." $textBytes ".$msg['bytes'];
 			}
 			
 			if ($error != "") {
@@ -80,4 +83,5 @@ class EPC06912 {
 		return $epc;
 	}
 }
+
 ?>
