@@ -2,7 +2,7 @@
 // Creates payload for QR-Code according to EPC guideline EPC069-12
 // Repository: https://github.com/MarvinLudwig/EPC069-12
 // Licence: Apache 2.0
-// Version: 1.0
+// Version: 1.1
 
 class EPC06912 {
 
