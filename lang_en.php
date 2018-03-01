@@ -1,9 +1,9 @@
 <?php
 
 $msg['amount_invalid'] = "Amount is not a valid number";
-$msg['amount_decimals'] = "Amount must not have more than 2 decimals."
+$msg['amount_decimals'] = "Amount must not have more than 2 decimals.";
 $msg['encoding_1'] = "Character encoding";
-$msg['encoding_2'] = "is not supported."
+$msg['encoding_2'] = "is not supported.";
 $msg['name_length'] = "Name has more than 70 characters.";
 $msg['bic_length'] = "BIC has more than 11 characters.";
 $msg['iban_length'] = "IBAN has more than 34 characters.";
